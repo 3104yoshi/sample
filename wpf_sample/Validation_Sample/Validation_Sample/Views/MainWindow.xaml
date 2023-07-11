@@ -1,0 +1,63 @@
+﻿<Window x:Class="Validation_Sample.Views.MainWindow"
+        xmlns:Prism="http://prismlibrary.com/"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Validation_Sample.ValidationRules"
+        xmlns:local1="clr-namespace:Validation_Sample.TriggerAction"
+        xmlns:local2="clr-namespace:Validation_Sample.Behavior"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525"
+        Prism:ViewModelLocator.AutoWireViewModel="True">
+    <i:Interaction.Behaviors>
+        <local2:ConfirmBehaivior />
+    </i:Interaction.Behaviors>
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="Background" Value="LightPink"/>
+                    <Setter Property="ToolTip" 
+                            Value="{Binding RelativeSource={x:Static RelativeSource.Self}, 
+                                                        Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <ControlTemplate x:Key="_errorTemplate">
+            <StackPanel Orientation="Horizontal">
+                <Border BorderBrush="Red" BorderThickness="2" Margin="0,0,6,0">
+                    <AdornedElementPlaceholder x:Name="_el"/>
+                </Border>
+                <TextBlock Text="{Binding AdornedElement.(Validation.Errors)[0].ErrorContent, ElementName=_el}"
+                           Foreground="Red" HorizontalAlignment="Right"
+                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+            </StackPanel>
+        </ControlTemplate>
+    </Window.Resources>
+    <Grid>
+        <StackPanel>
+            <TextBox Validation.ErrorTemplate="{StaticResource _errorTemplate}"
+                     Text="{Binding AnnotationSampleText, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}" Width="100" Height="50" />
+            <TextBox Width="100" Height="50" Validation.ErrorTemplate="{StaticResource _errorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="ValidationRuleSampleText"
+                             ValidatesOnExceptions="True"
+                             UpdateSourceTrigger="PropertyChanged" >
+                        <Binding.ValidationRules>
+                            <local:TextValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <Button Height="50" Width="100">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <local1:WindowCloseAction></local1:WindowCloseAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>
