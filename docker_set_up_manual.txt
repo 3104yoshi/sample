@@ -1,0 +1,10 @@
+basically, I followed this reference (https://docs.docker.com/get-started/overview/)
+
+install docker-desktop
+
+clone
+
+make Dockerfile in \path\to\app
+
+execute 'docker run -d -p 80:80 docker/getting-started' in READEME.md
+
